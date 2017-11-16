@@ -29,8 +29,16 @@ class Boggle {
 		$this->grid = array_chunk($grid, 4);
 	}
 
+	public function getScore($word){
+		//check if valid to do
+		if(strlen($word) < 3 )
+			return 0;
+
+		return $this->score[min(8, strlen($word))];
+	}
+
 
 }
 
 $b = new Boggle;
-var_dump($b->grid);
+var_dump($b->getScore('aaaaaaaaadqsd'));
