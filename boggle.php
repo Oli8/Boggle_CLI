@@ -5,16 +5,21 @@ require_once 'letter.php';
 class Boggle {
 
 	public $dices = [];
-	public $score = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
+	public $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
 	public $grid = [];
 	public $gridObj = [];
-	public $time;
+	public $time = 180;
+	public $score = 0;
+
 
 	public function __construct(){
 		$this->dices = self::generateDices();
 		$this->generateGrid();
 		foreach($this->grid as $line)
 			echo join($line) . "\n";
+
+		$this->startTime = microtime(1);
+		$this->play();
 	}
 
 	public static function generateDices(): Array{
@@ -40,15 +45,35 @@ class Boggle {
 
 	}
 
+	public function play(){
+		while(1){
+			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
+			if($remainingTime < 0)
+				break;
+			echo "Temps restant : " . $remainingTime . " seconde(s)\n";
+			echo "Entrez un mot :\n";
+			$word = _readline();
+			if($this->find_word(strtoupper($word), $this->gridObj)){
+				echo "Le mot $word vous rapport " . $this->getScore($word) . " point(s).\n";
+				$this->score += $this->getScore($word);
+			}
+			else
+				echo "Le mot $word n'est pas présent sur la grille.\n";
+			echo "\n";
+		}
+		echo "Temps écoulé\nScore: " . $this->score;
+
+	}
+
 	public function getScore(String $word): Int{
 		if(strlen($word) < 3 )
 			return 0;
 
-		return $this->score[min(8, strlen($word))];
+		return $this->letterScore[min(8, strlen($word))];
 	}
 
 	public function find_word(String $word, Array $grid, Array $visited = []): Bool{
-	    $letters = array_filter($this->find_letters($grid, $word[0]), function ($l) use($visited){
+	    $letters = array_filter(self::find_letters($grid, $word[0]), function ($l) use($visited){
 	        return !in_array($l, $visited);
 	    });
 	    if(!$letters) return false;
@@ -61,7 +86,7 @@ class Boggle {
 	    return false;
 	}
 
-	public function find_letters(Array $grid, String $letter): Array{
+	public static function find_letters(Array $grid, String $letter): Array{
 	    $found = [];
 	    foreach($grid as $line)
 	        foreach($line as $l)
@@ -86,12 +111,3 @@ function _readline($text=''){
 }
 
 $b = new Boggle;
-
-while(1){
-	echo "Entrez un mot\n";
-	$word = _readline();
-	if($b->find_word(strtoupper($word), $b->gridObj))
-		echo "Le mot $word vous rapport " . $b->getScore($word) . " point(s)\n";
-	else
-		echo "Le mot $word n'est pas présent sur la grille\n";
-}
