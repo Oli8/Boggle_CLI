@@ -8,7 +8,7 @@ class Boggle {
 	public $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
 	public $grid = [];
 	public $gridObj = [];
-	public $time = 180;
+	public $time = 5; //180;
 	public $score = 0;
 
 
@@ -50,7 +50,7 @@ class Boggle {
 			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
 			if($remainingTime < 0)
 				break;
-			echo "Temps restant : " . $remainingTime . " seconde(s)\n";
+			echo "Temps restant : {$remainingTime} seconde(s)\n";
 			echo "Entrez un mot :\n";
 			$word = _readline();
 			if($this->find_word(strtoupper($word), $this->gridObj)){
@@ -61,7 +61,7 @@ class Boggle {
 				echo "Le mot $word n'est pas présent sur la grille.\n";
 			echo "\n";
 		}
-		echo "Temps écoulé\nScore: " . $this->score;
+		echo "Temps écoulé\nScore: $this->score\n";
 
 	}
 
