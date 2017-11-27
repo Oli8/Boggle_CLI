@@ -10,6 +10,7 @@ class Boggle {
 	public $gridObj = [];
 	public $time = 5; //180;
 	public $score = 0;
+	#public $words = []
 
 	public function __construct(){
 		$this->dices = self::generateDices();
@@ -45,14 +46,15 @@ class Boggle {
 	public function play(){
 		while(1){
 			echo "Entrez un mot :\n";
-			$word = _readline();
+			$word = strtoupper(_readline());
 			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
 			if($remainingTime < 0)
 				break;
 			echo "Temps restant : $remainingTime seconde(s)\n";
-			if($this->find_word(strtoupper($word), $this->gridObj)){
+			if($word && $this->find_word($word, $this->gridObj)){
 				echo "Le mot $word vous rapporte " . $this->getScore($word) . " point(s).\n";
 				$this->score += $this->getScore($word);
+				#$this->words[] = $
 			}
 			else
 				echo "Le mot $word n'est pas présent sur la grille.\n";
