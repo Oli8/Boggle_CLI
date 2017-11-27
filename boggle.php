@@ -14,9 +14,9 @@ class Boggle {
 
 	public function __construct(){
 		echo self::_print(strtoupper("welcome to boogle_cli!"), "success");
+		sleep(2);
 		$this->dices = self::generateDices();
 		$this->generateGrid();
-
 		$this->startTime = microtime(1);
 	}
 
@@ -53,7 +53,13 @@ class Boggle {
 			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
 			if($remainingTime < 0)
 				break;
-			echo "Temps restant : $remainingTime seconde(s)\n";
+
+			$remainingTime_str = "Temps restant : $remainingTime seconde(s)\n";
+			if($remainingTime < 10)
+				echo self::_print($remainingTime_str, "danger");
+			else
+				echo $remainingTime_str;
+
 
 			if(!$word)
 				echo self::_print("Vous avez entré une chaine vide :|", "warning");
