@@ -46,7 +46,7 @@ class Boggle {
 		while(1){
 			system('clear');
 			foreach($this->grid as $line)
-			echo join($line) . "\n";
+				echo join($line) . "\n";
 			echo count($this->words) ? "Mots trouvés : " . join(', ', $this->words) . "\n" : '';
 			echo "Entrez un mot :\n";
 			$word = strtoupper(_readline());
