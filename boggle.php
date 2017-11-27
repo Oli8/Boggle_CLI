@@ -44,12 +44,12 @@ class Boggle {
 
 	public function play(){
 		while(1){
+			echo "Entrez un mot :\n";
+			$word = _readline();
 			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
 			if($remainingTime < 0)
 				break;
 			echo "Temps restant : $remainingTime seconde(s)\n";
-			echo "Entrez un mot :\n";
-			$word = _readline();
 			if($this->find_word(strtoupper($word), $this->gridObj)){
 				echo "Le mot $word vous rapporte " . $this->getScore($word) . " point(s).\n";
 				$this->score += $this->getScore($word);
