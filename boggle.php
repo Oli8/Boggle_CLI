@@ -8,7 +8,7 @@ class Boggle {
 	public $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
 	public $grid = [];
 	public $gridObj = [];
-	public $time = 10; //180;
+	public $time = 30; //180;
 	public $score = 0;
 	private $words = [];
 
@@ -45,15 +45,16 @@ class Boggle {
 	public function play(){
 		while(1){
 			system('clear');
-			foreach($this->grid as $line)
-				echo join($line) . "\n";
+			$this->displayGrid();
 			echo count($this->words) ? "Mots trouvés : " . join(', ', $this->words) . "\n" : '';
 			echo "Entrez un mot :\n";
+
 			$word = strtoupper(_readline());
 			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
 			if($remainingTime < 0)
 				break;
 			echo "Temps restant : $remainingTime seconde(s)\n";
+
 			if(!$word)
 				echo self::_print("Vous avez entré une chaine vide :|", "warning");
 			else if(in_array($word, $this->words))
@@ -80,16 +81,19 @@ class Boggle {
 		return $this->letterScore[min(8, strlen($word))];
 	}
 
-	public function find_word(String $word, Array $grid, Array $visited = []): Bool{
+	public function find_word(String $word, Array $grid, Array $visited = []){
 	    $letters = array_filter(self::find_letters($grid, $word[0]), function ($l) use($visited){
 	        return !in_array($l, $visited);
 	    });
 	    if(!$letters) return false;
-	    if(strlen($word) === 1) return true;
+		if(strlen($word) === 1){
+			$this->last_word_letters = array_merge($visited, [end($letters)]);//set this if word found
+			return true;
+		}
 
 	    foreach($letters as $letter)
 	        if($this->find_word(substr($word, 1), $letter->neighbours($this->gridObj), array_merge($visited, [$letter])) === true)
-	            return true;
+				return true;
 	    
 	    return false;
 	}
@@ -104,14 +108,28 @@ class Boggle {
 	    return $found;
 	}
 
-	public static function _print($msg, $type){
+	public static function _print($msg, $type, $carriage_return = true){
 		$colors = [
 			'danger' => '0;31',
 			'warning' => '0;33',
 			'success' => '0;32',
 		];
 
-		return "\033[{$colors[$type]}m$msg\033[0m\n";
+		return "\033[{$colors[$type]}m$msg\033[0m" . str_repeat("\n", !!$carriage_return);
+	}
+
+	public function displayGrid(){
+		if(!empty($this->last_word_letters))//if not empty -> display word
+			foreach($this->gridObj as $line){
+				foreach($line as $l)
+					echo in_array($l, $this->last_word_letters) ? self::_print($l->value, 'success', false) : $l->value;
+				echo "\n";
+			}
+		else
+			foreach($this->grid as $line)
+				echo join($line) . "\n";
+
+		$this->last_word_letters = '';
 	}
 
 }
