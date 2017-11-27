@@ -16,8 +16,6 @@ class Boggle {
 		echo self::_print(strtoupper("welcome to boogle_cli!"), "success");
 		$this->dices = self::generateDices();
 		$this->generateGrid();
-		foreach($this->grid as $line)
-			echo join($line) . "\n";
 
 		$this->startTime = microtime(1);
 	}
@@ -46,6 +44,10 @@ class Boggle {
 
 	public function play(){
 		while(1){
+			system('clear');
+			foreach($this->grid as $line)
+			echo join($line) . "\n";
+			echo count($this->words) ? "Mots trouvés : " . join(', ', $this->words) . "\n" : '';
 			echo "Entrez un mot :\n";
 			$word = strtoupper(_readline());
 			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
@@ -65,6 +67,7 @@ class Boggle {
 			else
 				echo self::_print("Le mot $word n'est pas présent sur la grille.", "warning");
 			echo "\n";
+			sleep(2);
 		}
 		echo self::_print("Temps écoulé", "danger");
 		echo self::_print("Score: $this->score", "success");
