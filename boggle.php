@@ -13,7 +13,7 @@ class Boggle {
 	private $words = [];
 
 	public function __construct(){
-		echo self::_print(strtoupper("welcome to boogle_cli!"), "success");
+		echo self::_print(strtoupper(self::header("welcome to boogle_cli!")), "success");
 		sleep(2);
 		$this->dices = self::generateDices();
 		$this->generateGrid();
@@ -46,6 +46,7 @@ class Boggle {
 		while(1){
 			system('clear');
 			$this->displayGrid();
+			$this->last_word_letters = '';
 			echo count($this->words) ? "Mots trouvés : " . join(', ', $this->words) . "\n" : '';
 			echo "Entrez un mot :\n";
 
@@ -78,6 +79,7 @@ class Boggle {
 		}
 		echo self::_print("Temps écoulé", "danger");
 		echo self::_print("Score: $this->score", "success");
+		$this->game_info();
 	}
 
 	public function getScore(String $word): Int{
@@ -87,7 +89,7 @@ class Boggle {
 		return $this->letterScore[min(8, strlen($word))];
 	}
 
-	public function find_word(String $word, Array $grid, Array $visited = []){
+	public function find_word(String $word, Array $grid, Array $visited = []): Bool{
 	    $letters = array_filter(self::find_letters($grid, $word[0]), function ($l) use($visited){
 	        return !in_array($l, $visited);
 	    });
@@ -104,6 +106,16 @@ class Boggle {
 	    return false;
 	}
 
+	private function game_info(){
+		usort($this->words, function($a, $b){
+			return strlen($b) <=> strlen($a);
+		});
+		echo self::header("Détails de vos points");
+		echo self::_print(join("\n", array_map(function($w){
+			return $w . " -> " . $this->getScore($w);
+		}, $this->words)), "success");
+	}
+
 	public static function find_letters(Array $grid, String $letter): Array{
 	    $found = [];
 	    foreach($grid as $line)
@@ -114,7 +126,7 @@ class Boggle {
 	    return $found;
 	}
 
-	public static function _print($msg, $type, $carriage_return = true){
+	private static function _print(String $msg, String $type, Bool $carriage_return = true): String{
 		$colors = [
 			'danger' => '0;31',
 			'warning' => '0;33',
@@ -134,13 +146,16 @@ class Boggle {
 		else
 			foreach($this->grid as $line)
 				echo join($line) . "\n";
+	}
 
-		$this->last_word_letters = '';
+	private static function header(String $msg): String{
+		$border = str_repeat("*", strlen($msg));
+		return "$border\n$msg\n$border\n";
 	}
 
 }
 
-function _readline($text=''){
+function _readline(String $text=''): String{
 	if (PHP_OS == 'WINNT') {
 	  $line = stream_get_line(STDIN, 1024, PHP_EOL);
 	} 
