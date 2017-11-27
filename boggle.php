@@ -11,7 +11,6 @@ class Boggle {
 	public $time = 5; //180;
 	public $score = 0;
 
-
 	public function __construct(){
 		$this->dices = self::generateDices();
 		$this->generateGrid();
@@ -19,7 +18,6 @@ class Boggle {
 			echo join($line) . "\n";
 
 		$this->startTime = microtime(1);
-		$this->play();
 	}
 
 	public static function generateDices(): Array{
@@ -42,7 +40,6 @@ class Boggle {
 		foreach($this->grid as $y => $line)
 		    foreach($line as $x => $value)
 		        $this->gridObj[$y][$x] = new Letter($value, [$y, $x]);
-
 	}
 
 	public function play(){
@@ -50,11 +47,11 @@ class Boggle {
 			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
 			if($remainingTime < 0)
 				break;
-			echo "Temps restant : {$remainingTime} seconde(s)\n";
+			echo "Temps restant : $remainingTime seconde(s)\n";
 			echo "Entrez un mot :\n";
 			$word = _readline();
 			if($this->find_word(strtoupper($word), $this->gridObj)){
-				echo "Le mot $word vous rapport " . $this->getScore($word) . " point(s).\n";
+				echo "Le mot $word vous rapporte " . $this->getScore($word) . " point(s).\n";
 				$this->score += $this->getScore($word);
 			}
 			else
@@ -96,12 +93,10 @@ class Boggle {
 	    return $found;
 	}
 
-
 }
 
 function _readline($text=''){
 	if (PHP_OS == 'WINNT') {
-	  echo $text;
 	  $line = stream_get_line(STDIN, 1024, PHP_EOL);
 	} 
 	else
@@ -110,4 +105,4 @@ function _readline($text=''){
 	return $line;
 }
 
-$b = new Boggle;
+(new Boggle)->play();
