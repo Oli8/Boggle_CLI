@@ -8,11 +8,12 @@ class Boggle {
 	public $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
 	public $grid = [];
 	public $gridObj = [];
-	public $time = 5; //180;
+	public $time = 10; //180;
 	public $score = 0;
 	private $words = [];
 
 	public function __construct(){
+		echo self::_print(strtoupper("welcome to boogle_cli!"), "success");
 		$this->dices = self::generateDices();
 		$this->generateGrid();
 		foreach($this->grid as $line)
@@ -52,21 +53,21 @@ class Boggle {
 				break;
 			echo "Temps restant : $remainingTime seconde(s)\n";
 			if(!$word)
-				echo "Vous avez entré une chaine vide :|\n";
+				echo self::_print("Vous avez entré une chaine vide :|", "warning");
 			else if(in_array($word, $this->words))
-				echo "Vous avez déjà entré ce mot\n";
+				echo self::_print("Vous avez déjà entré ce mot", "warning");
 			else if($this->find_word($word, $this->gridObj)){
 				$score = $this->getScore($word);
-				echo "Le mot $word vous rapporte $score point";
-				echo $score > 1 ? "s\n" : "\n";
+				echo self::_print("Le mot $word vous rapporte $score point" . ($score > 1 ? "s" : ""), "success");
 				$this->score += $score;
 				$this->words[] = $word;
 			}
 			else
-				echo "Le mot $word n'est pas présent sur la grille.\n";
+				echo self::_print("Le mot $word n'est pas présent sur la grille.", "warning");
 			echo "\n";
 		}
-		echo "Temps écoulé\nScore: $this->score\n";
+		echo self::_print("Temps écoulé", "danger");
+		echo self::_print("Score: $this->score", "success");
 	}
 
 	public function getScore(String $word): Int{
@@ -98,6 +99,16 @@ class Boggle {
 	                $found[] = $l;
 
 	    return $found;
+	}
+
+	public static function _print($msg, $type){
+		$colors = [
+			'danger' => '0;31',
+			'warning' => '0;33',
+			'success' => '0;32',
+		];
+
+		return "\033[{$colors[$type]}m$msg\033[0m\n";
 	}
 
 }
