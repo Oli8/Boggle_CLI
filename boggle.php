@@ -10,7 +10,7 @@ class Boggle {
 	public $gridObj = [];
 	public $time = 5; //180;
 	public $score = 0;
-	#public $words = []
+	private $words = [];
 
 	public function __construct(){
 		$this->dices = self::generateDices();
@@ -51,17 +51,22 @@ class Boggle {
 			if($remainingTime < 0)
 				break;
 			echo "Temps restant : $remainingTime seconde(s)\n";
-			if($word && $this->find_word($word, $this->gridObj)){
-				echo "Le mot $word vous rapporte " . $this->getScore($word) . " point(s).\n";
-				$this->score += $this->getScore($word);
-				#$this->words[] = $
+			if(!$word)
+				echo "Vous avez entré une chaine vide :|\n";
+			else if(in_array($word, $this->words))
+				echo "Vous avez déjà entré ce mot\n";
+			else if($this->find_word($word, $this->gridObj)){
+				$score = $this->getScore($word);
+				echo "Le mot $word vous rapporte $score point";
+				echo $score > 1 ? "s\n" : "\n";
+				$this->score += $score;
+				$this->words[] = $word;
 			}
 			else
 				echo "Le mot $word n'est pas présent sur la grille.\n";
 			echo "\n";
 		}
 		echo "Temps écoulé\nScore: $this->score\n";
-
 	}
 
 	public function getScore(String $word): Int{
