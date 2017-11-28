@@ -13,7 +13,7 @@ class Boggle {
 	private $words = [];
 
 	public function __construct(){
-		echo self::_print(strtoupper(self::header("welcome to boogle_cli!")), "success");
+		echo self::_print(strtoupper(self::header("welcome to boggle_cli!")), "success");
 		sleep(2);
 		$this->dices = self::generateDices();
 		$this->generateGrid();
@@ -96,7 +96,7 @@ class Boggle {
 	}
 
 	public function find_word(String $word, Array $grid, Array $visited = []): Bool{
-	    $letters = array_filter(self::find_letters($grid, $word[0]), function ($l) use($visited){
+	    $letters = array_filter(self::find_letters($grid, $word[0]), function($l) use($visited){
 	        return !in_array($l, $visited);
 	    });
 	    if(!$letters) return false;
