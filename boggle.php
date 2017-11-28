@@ -61,27 +61,30 @@ class Boggle {
 			else
 				echo $remainingTime_str;
 
-			if(!$word)
-				echo self::_print("Vous avez entré une chaine vide :|", "warning");
-			else if(in_array($word, $this->words))
-				echo self::_print("Vous avez déjà entré ce mot", "warning");
-			else if(!self::valid_word($word))
-				echo self::_print("Ce mot n'éxiste pas", "warning");
-			else if($this->find_word($word, $this->gridObj)){
-				$score = $this->getScore($word);
-				echo self::_print("Le mot $word vous rapporte $score point" . ($score > 1 ? "s" : ""), "success");
-				$this->score += $score;
-				$this->words[] = $word;
-			}
-			else
-				echo self::_print("Le mot $word n'est pas présent sur la grille.", "warning");
-
+			$this->handle_word($word);
 			echo "\n";
 			sleep(2);
 		}
 		echo self::_print("Temps écoulé", "danger");
 		echo self::_print("Score: $this->score", "success");
 		$this->game_info();
+	}
+
+	private function handle_word(String $word){
+		if(!$word)
+			echo self::_print("Vous avez entré une chaine vide :|", "warning");
+		else if(in_array($word, $this->words))
+			echo self::_print("Vous avez déjà entré ce mot", "warning");
+		else if(!self::valid_word($word))
+			echo self::_print("Ce mot n'existe pas", "warning");
+		else if($this->find_word($word, $this->gridObj)){
+			$score = $this->getScore($word);
+			echo self::_print("Le mot $word vous rapporte $score point" . ($score > 1 ? "s" : ""), "success");
+			$this->score += $score;
+			$this->words[] = $word;
+		}
+		else
+			echo self::_print("Le mot $word n'est pas présent sur la grille.", "warning");
 	}
 
 	private static function valid_word(String $word): Bool{
