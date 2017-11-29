@@ -75,12 +75,16 @@ class Boggle {
 	private function check_highscores(){
 		$highscore_file = 'highscores.json';
 		$scores = json_decode(file_get_contents($highscore_file), true);
-		if(!isset($scores[$this->time]['score']) || $this->score > $scores[$this->time]['score']){ # new highscore
+		if(!isset($scores[$this->time]) || $this->score > $scores[$this->time]['score']){
 			echo self::_print("Nouveau record !", "success");
 			echo "Entrez votre nom:\n";
 			$scores[$this->time] = ['player' => trim(readline()) ?: 'Player', 'score' => $this->score];
 		}
 		file_put_contents($highscore_file, json_encode($scores));
+
+		echo self::header("Record:");
+		foreach($scores as $time => $record)
+			echo "{$time}s. -> {$record['score']} - {$record['player']}\n";
 	}
 
 	private function handle_word(String $word){
@@ -172,7 +176,7 @@ class Boggle {
 
 	private static function header(String $msg): String{
 		$border = str_repeat("*", strlen($msg));
-		return "$border\n$msg\n$border\n";
+		return "\n$border\n$msg\n$border\n";
 	}
 
 }
