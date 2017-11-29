@@ -8,7 +8,7 @@ class Boggle {
 	public $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
 	public $grid = [];
 	public $gridObj = [];
-	public $time = 30; //180;
+	public $time = 10; //180;
 	public $score = 0;
 	private $words = [];
 
@@ -67,7 +67,20 @@ class Boggle {
 		}
 		echo self::_print("Temps écoulé", "danger");
 		echo self::_print("Score: $this->score", "success");
-		$this->game_info();
+		if($this->score > 0)
+			$this->game_info();
+		$this->check_highscores();
+	}
+
+	private function check_highscores(){
+		$highscore_file = 'highscores.json';
+		$scores = json_decode(file_get_contents($highscore_file), true);
+		if(!isset($scores[$this->time]['score']) || $this->score > $scores[$this->time]['score']){ # new highscore
+			echo self::_print("Nouveau record !", "success");
+			echo "Entrez votre nom:\n";
+			$scores[$this->time] = ['player' => trim(readline()) ?: 'Player', 'score' => $this->score];
+		}
+		file_put_contents($highscore_file, json_encode($scores));
 	}
 
 	private function handle_word(String $word){
@@ -119,12 +132,10 @@ class Boggle {
 		usort($this->words, function($a, $b){
 			return strlen($b) <=> strlen($a);
 		});
-		if($this->score > 0){
-			echo self::header("Détails de vos points");
-			echo self::_print(join("\n", array_map(function($w){
-				return $w . " -> " . $this->getScore($w);
-			}, $this->words)), "success");
-		}
+		echo self::header("Détails de vos points");
+		echo self::_print(join("\n", array_map(function($w){
+			return $w . " -> " . $this->getScore($w);
+		}, $this->words)), "success");
 	}
 
 	public static function find_letters(Array $grid, String $letter): Array{
