@@ -24,9 +24,7 @@ class Boggle {
 		$dices = ["LENUYG", "ELUPST", "ZDVNEA", "SDTNOE", "AMORIS", "FXRAOI", "MOQABJ", "FSHEEI", "HRSNEI", "ETNKOU", "TARILB",
 		 "TIEAOA", "ACEPDM", "RLASEC", "ULIWER", "VGTNIE"];
 
-		return array_map(function($d){
-			return str_split($d);
-		}, $dices);
+		return array_map('str_split', $dices);
 	}
 
 	public function generateGrid(){
