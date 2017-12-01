@@ -13,6 +13,7 @@ class Boggle {
 	private $words = [];
 
 	public function __construct(){
+		system('clear');
 		echo self::_print(strtoupper(self::header("welcome to boggle_cli!")), "success");
 		sleep(2);
 		$this->dices = self::generateDices();
@@ -72,7 +73,7 @@ class Boggle {
 
 	private function check_highscores(){
 		$highscore_file = 'highscores.json';
-		$scores = json_decode(file_get_contents($highscore_file), true);
+		$scores = json_decode(@file_get_contents($highscore_file), true) ?: [];
 		if(!isset($scores[$this->time]) || $this->score > $scores[$this->time]['score']){
 			echo self::_print("Nouveau record !", "success");
 			echo "Entrez votre nom:\n";
