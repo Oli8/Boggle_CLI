@@ -14,6 +14,7 @@ class Boggle {
 
 	public function __construct(){
 		system('clear');
+		$this->handle_options();
 		echo self::_print(strtoupper(self::header("welcome to boggle_cli!")), "success");
 		sleep(2);
 		$this->dices = self::generateDices();
@@ -176,6 +177,17 @@ class Boggle {
 	private static function header(String $msg): String{
 		$border = str_repeat("*", strlen($msg));
 		return "\n$border\n$msg\n$border\n";
+	}
+
+	public function handle_options(){
+		$options = ['t:'];
+		$long_options = ['time::'];
+		$game_options = getopt(join($options), $long_options);
+
+		if(isset($game_options['time']) || isset($game_options['t'])){
+			$time = $game_options['time'] ?? $game_options['t'];//looks like it's working \o/
+			$this->time = intval($time);
+		}
 	}
 
 }
