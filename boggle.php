@@ -189,10 +189,7 @@ class Boggle {
 }
 
 function _readline(String $text=''): String{
-	if(PHP_OS == 'WINNT')
-	  $line = stream_get_line(STDIN, 1024, PHP_EOL);
-	else
-	  $line = readline($text);
+	$line = PHP_OS == 'WINNT' ? stream_get_line(STDIN, 1024, PHP_EOL) : readline($text);
 
 	return $line;
 }
