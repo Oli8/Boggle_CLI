@@ -20,21 +20,3 @@ Class Option {
 	}
 
 }
-
-$boogle = new Class{};
-
-$options = [
-	new Option('t:', 'time:', function($val){
-		$this->time = intval($val);
-	}),
-];
-
-var_dump($boogle);
-# handle options
-// foreach($options as $opt)
-// 	$opt->check($boogle);
-
-#current($options)->check($boogle);
-call_user_func_array([current($options), 'check'], [$boogle]);
-
-var_dump($boogle);
