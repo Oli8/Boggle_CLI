@@ -1,6 +1,7 @@
 <?php
 
 require_once 'letter.php';
+require_once 'option.php';
 
 class Boggle {
 
@@ -13,8 +14,9 @@ class Boggle {
 	private $words = [];
 
 	public function __construct(){
+		global $options;
 		system('clear');
-		$this->handle_options();
+		$this->handle_options($options);
 		echo self::_print(strtoupper(self::header("welcome to boggle_cli!")), "success");
 		sleep(2);
 		$this->dices = self::generateDices();
@@ -179,15 +181,9 @@ class Boggle {
 		return "\n$border\n$msg\n$border\n";
 	}
 
-	public function handle_options(){
-		$options = ['t:'];
-		$long_options = ['time::'];
-		$game_options = getopt(join($options), $long_options);
-
-		if(isset($game_options['time']) || isset($game_options['t'])){
-			$time = $game_options['time'] ?? $game_options['t'];//looks like it's working \o/
-			$this->time = intval($time);
-		}
+	private function handle_options($options){
+		foreach($options as $opt)
+			$opt->check($this);
 	}
 
 }
@@ -200,5 +196,14 @@ function _readline(String $text=''): String{
 
 	return $line;
 }
+
+$options = [
+	new Option('t:', 'time:', function($val){
+		$this->time = $val;
+	}),
+	new Option('m', 'malus', function($val){
+		$this->malus = true;
+	}),
+];
 
 (new Boggle)->play();
