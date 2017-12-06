@@ -9,9 +9,10 @@ class Boggle {
 	public $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
 	public $grid = [];
 	public $gridObj = [];
-	public $time = 10; //180;
+	public $time = 180;
 	public $score = 0;
-	private $words = [];
+	private $words = ['valid' => [], 'invalid' => []];
+	private $malus = false;
 
 	public function __construct(){
 		global $options;
@@ -49,7 +50,7 @@ class Boggle {
 			system('clear');
 			$this->displayGrid();
 			$this->last_word_letters = '';
-			echo count($this->words) ? "Mots trouvés : " . join(', ', $this->words) . "\n" : '';
+			echo count($this->words['valid']) ? "Mots trouvés : " . join(', ', $this->words['valid']) . "\n" : '';
 			echo "Entrez un mot :\n";
 
 			$word = strtoupper(_readline());
@@ -69,7 +70,7 @@ class Boggle {
 		}
 		echo self::_print("Temps écoulé", "danger");
 		echo self::_print("Score: $this->score", "success");
-		if($this->score > 0)
+		if($this->words['valid'] || $this->words['invalid'])
 			$this->game_info();
 		$this->check_highscores();
 	}
@@ -90,20 +91,29 @@ class Boggle {
 	}
 
 	private function handle_word(String $word){
+		$malus = false;
 		if(!$word)
 			echo self::_print("Vous avez entré une chaine vide :|", "warning");
-		else if(in_array($word, $this->words))
+		else if(in_array($word, array_merge($this->words['valid'], $this->words['invalid'])))
 			echo self::_print("Vous avez déjà entré ce mot", "warning");
-		else if(!self::valid_word($word))
+		else if(!self::valid_word($word)){
 			echo self::_print("Ce mot n'existe pas", "warning");
+			$malus = true;
+		}
 		else if($this->find_word($word, $this->gridObj)){
 			$score = $this->getScore($word);
 			echo self::_print("Le mot $word vous rapporte $score point" . ($score > 1 ? "s" : ""), "success");
 			$this->score += $score;
-			$this->words[] = $word;
+			$this->words['valid'][] = $word;
 		}
 		else
 			echo self::_print("Le mot $word n'est pas présent sur la grille.", "warning");
+
+		if($malus){
+			$this->words['invalid'][] = $word;
+			if($this->malus)
+				$this->score -= $this->getScore($word);
+		}
 	}
 
 	private static function valid_word(String $word): Bool{
@@ -135,13 +145,22 @@ class Boggle {
 	}
 
 	private function game_info(){
-		usort($this->words, function($a, $b){
-			return strlen($b) <=> strlen($a);
-		});
+		$this->words = array_map(function($words){
+			usort($words, function($a, $b){
+				return strlen($b) <=> strlen($a);
+			});
+			return $words;
+		}, $this->words);
+
 		echo self::header("Détails de vos points");
 		echo self::_print(join("\n", array_map(function($w){
 			return $w . " -> " . $this->getScore($w);
-		}, $this->words)), "success");
+		}, $this->words['valid'])), "success");
+
+		if($this->malus)
+			echo self::_print(join("\n", array_map(function($w){
+				return $w . " -> " . -$this->getScore($w);
+			}, $this->words['invalid'])), "danger");
 	}
 
 	public static function find_letters(Array $grid, String $letter): Array{
@@ -186,6 +205,15 @@ class Boggle {
 			$opt->check($this);
 	}
 
+	private static function display_help(){
+		return self::header("BOGGLE_CLI") . "\n" . join("\n", [
+			"Usage: php boogle.php [options]\n",
+			"-t, --t TIME     Set time to TIME",
+			"-m, --malus      Enable malus",
+			"-h --help        Display help",
+			""]);
+	}
+
 }
 
 function _readline(String $text=''): String{
@@ -198,11 +226,14 @@ function _readline(String $text=''): String{
 }
 
 $options = [
+	new Option('m', 'malus', function(){
+		$this->malus = true;
+	}),
+	new Option('h', 'help', function(){
+		die(self::display_help());
+	}),
 	new Option('t:', 'time:', function($val){
 		$this->time = $val;
-	}),
-	new Option('m', 'malus', function($val){
-		$this->malus = true;
 	}),
 ];
 
