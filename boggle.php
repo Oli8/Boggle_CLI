@@ -121,7 +121,7 @@ class Boggle {
 	}
 
 	public function getScore(String $word): Int{
-		if(strlen($word) < 3 )
+		if(strlen($word) < 3)
 			return 0;
 
 		return $this->letterScore[min(8, strlen($word))];
