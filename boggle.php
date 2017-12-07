@@ -208,7 +208,7 @@ class Boggle {
 	private static function display_help(){
 		return self::header("BOGGLE_CLI") . "\n" . join("\n", [
 			"Usage: php boogle.php [options]\n",
-			"-t, --t TIME     Set time to TIME",
+			"-t, --time TIME  Set time to TIME",
 			"-m, --malus      Enable malus",
 			"-h --help        Display help",
 			""]);
