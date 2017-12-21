@@ -2,6 +2,7 @@
 
 require_once 'letter.php';
 require_once 'option.php';
+require_once 'messages.php';
 
 class Boggle {
 
@@ -214,6 +215,11 @@ class Boggle {
 			"-h --help        Display help",
 			"-l, --lang LANG  Set language to LANG",
 			""]);
+	}
+
+	private function message($key){
+		global $messages;
+		return $messages[$key][$this->lang];
 	}
 
 }
