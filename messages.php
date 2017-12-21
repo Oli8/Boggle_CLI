@@ -16,6 +16,3 @@ $messages = [
 	"word_not_on_grid" => ["en" => , "fr" =>],
 	"details" => ["en" => , "fr" =>],
 ];
-
-
-

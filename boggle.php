@@ -13,6 +13,7 @@ class Boggle {
 	private $score = 0;
 	private $words = ['valid' => [], 'invalid' => []];
 	private $malus = false;
+	private $lang = 'fr';
 
 	public function __construct(){
 		global $options;
@@ -211,6 +212,7 @@ class Boggle {
 			"-t, --time TIME  Set time to TIME",
 			"-m, --malus      Enable malus",
 			"-h --help        Display help",
+			"-l, --lang LANG  Set language to LANG",
 			""]);
 	}
 
@@ -231,6 +233,9 @@ $options = [
 	}),
 	new Option('t:', 'time:', function($val){
 		$this->time = $val;
+	}),
+	new Option('l:', 'lang:', function($val){
+		$this->lang = $val;
 	}),
 ];
 
