@@ -5,12 +5,12 @@ require_once 'option.php';
 
 class Boggle {
 
-	public $dices = [];
-	public $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
-	public $grid = [];
-	public $gridObj = [];
-	public $time = 180;
-	public $score = 0;
+	private $dices = [];
+	private $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
+	private $grid = [];
+	private $gridObj = [];
+	private $time = 180;
+	private $score = 0;
 	private $words = ['valid' => [], 'invalid' => []];
 	private $malus = false;
 
@@ -25,14 +25,14 @@ class Boggle {
 		$this->startTime = microtime(1);
 	}
 
-	public static function generateDices(): Array{
+	private static function generateDices(): Array{
 		$dices = ["LENUYG", "ELUPST", "ZDVNEA", "SDTNOE", "AMORIS", "FXRAOI", "MOQABJ", "FSHEEI", "HRSNEI", "ETNKOU", "TARILB",
 		 "TIEAOA", "ACEPDM", "RLASEC", "ULIWER", "VGTNIE"];
 
 		return array_map('str_split', $dices);
 	}
 
-	public function generateGrid(){
+	private function generateGrid(){
 		shuffle($this->dices);
 		$grid = array_map(function ($die){
 			return $die[rand(0, 5)];
@@ -120,14 +120,14 @@ class Boggle {
 		return in_array($word, array_map('trim', file('french_words.txt')));
 	}
 
-	public function getScore(String $word): Int{
+	private function getScore(String $word): Int{
 		if(strlen($word) < 3)
 			return 0;
 
 		return $this->letterScore[min(8, strlen($word))];
 	}
 
-	public function find_word(String $word, Array $grid, Array $visited = []): Bool{
+	private function find_word(String $word, Array $grid, Array $visited = []): Bool{
 	    $letters = array_filter(self::find_letters($grid, $word[0]), function($l) use($visited){
 	        return !in_array($l, $visited);
 	    });
@@ -163,7 +163,7 @@ class Boggle {
 			}, $this->words['invalid'])), "danger");
 	}
 
-	public static function find_letters(Array $grid, String $letter): Array{
+	private static function find_letters(Array $grid, String $letter): Array{
 	    $found = [];
 	    foreach($grid as $line)
 	        foreach($line as $l)
@@ -183,7 +183,7 @@ class Boggle {
 		return "\033[{$colors[$type]}m$msg\033[0m" . str_repeat("\n", !!$carriage_return);
 	}
 
-	public function displayGrid(){
+	private function displayGrid(){
 		if(!empty($this->last_word_letters))//if not empty -> display word
 			foreach($this->gridObj as $line){
 				foreach($line as $l)
