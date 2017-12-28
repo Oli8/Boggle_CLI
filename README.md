@@ -1,13 +1,16 @@
 # BOGGLE_CLI
 
-Jeu de Boggle jouable en ligne de commande, realisé en PHP7.
+Boggle game playable in command line, made in PHP7.  
+
+Currently, two language are available: english(en) and french(fr).
 
 ```
 Usage: php boogle.php [options]  
--t, --time TIME     Set time to TIME  
+-t, --time TIME  Set time to TIME  
 -m, --malus      Enable malus  
 -h --help        Display help  
+-l, --lang LANG  Set language to LANG  
   
 Exemple:  
-php boggle.php --time=60 -m  
+php boggle.php --time=60 --lang=fr -m  
 ```
