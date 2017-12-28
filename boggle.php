@@ -14,7 +14,7 @@ class Boggle {
 	private $score = 0;
 	private $words = ['valid' => [], 'invalid' => []];
 	private $malus = false;
-	private $lang = 'fr';
+	private $lang = 'en';
 
 	public function __construct(){
 		global $options;
