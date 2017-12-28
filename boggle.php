@@ -20,7 +20,7 @@ class Boggle {
 		global $options;
 		system('clear');
 		$this->handle_options($options);
-		echo self::_print(strtoupper(self::header("welcome to boggle_cli!")), "success");
+		echo self::_print(strtoupper(self::header($this->message("welcome"))), "success");
 		sleep(2);
 		$this->dices = self::generateDices();
 		$this->generateGrid();
@@ -52,15 +52,15 @@ class Boggle {
 			system('clear');
 			$this->displayGrid();
 			$this->last_word_letters = '';
-			echo count($this->words['valid']) ? "Mots trouvés : " . join(', ', $this->words['valid']) . "\n" : '';
-			echo "Entrez un mot :\n";
+			echo count($this->words['valid']) ? $this->message("words_found") . join(', ', $this->words['valid']) . "\n" : '';
+			echo $this->message("enter_word") . "\n";
 
 			$word = strtoupper(_readline());
 			$remainingTime = round($this->time - (microtime(1) - $this->startTime));
 			if($remainingTime < 0)
 				break;
 
-			$remainingTime_str = "Temps restant : $remainingTime seconde(s)\n";
+			$remainingTime_str = "{$this->message('time_left')} $remainingTime {$this->message('time_unit')}\n";
 			if($remainingTime < 10)
 				echo self::_print($remainingTime_str, "danger");
 			else
@@ -70,7 +70,7 @@ class Boggle {
 			echo "\n";
 			sleep(2);
 		}
-		echo self::_print("Temps écoulé", "danger");
+		echo self::_print($this->message("elapsed_time"), "danger");
 		echo self::_print("Score: $this->score", "success");
 		if($this->words['valid'] || $this->words['invalid'])
 			$this->game_info();
@@ -81,8 +81,8 @@ class Boggle {
 		$highscore_file = 'highscores.json';
 		$scores = json_decode(@file_get_contents($highscore_file), true) ?: [];
 		if(!isset($scores[$this->time]) || $this->score > $scores[$this->time]['score']){
-			echo self::_print("Nouveau record !", "success");
-			echo "Entrez votre nom:\n";
+			echo self::_print($this->message("new_record"), "success");
+			echo $this->message("enter_name") . "\n";
 			$scores[$this->time] = ['player' => trim(readline()) ?: 'Player', 'score' => $this->score];
 		}
 		file_put_contents($highscore_file, json_encode($scores));
@@ -95,21 +95,21 @@ class Boggle {
 	private function handle_word(String $word){
 		$malus = false;
 		if(!$word)
-			echo self::_print("Vous avez entré une chaine vide :|", "warning");
+			echo self::_print($this->message("empty"), "warning");
 		else if(in_array($word, array_merge($this->words['valid'], $this->words['invalid'])))
-			echo self::_print("Vous avez déjà entré ce mot", "warning");
+			echo self::_print($this->message("word_repeated"), "warning");
 		else if(!self::valid_word($word)){
-			echo self::_print("Ce mot n'existe pas", "warning");
+			echo self::_print($this->message("unexisting_word"), "warning");
 			$malus = true;
 		}
 		else if($this->find_word($word, $this->gridObj)){
 			$score = $this->getScore($word);
-			echo self::_print("Le mot $word vous rapporte $score point" . ($score > 1 ? "s" : ""), "success");
+			echo self::_print($this->message("word_gain")($word, $score), "success");
 			$this->score += $score;
 			$this->words['valid'][] = $word;
 		}
 		else
-			echo self::_print("Le mot $word n'est pas présent sur la grille.", "warning");
+			echo self::_print("'$word' " . $this->message("word_not_on_grid"), "warning");
 
 		if($malus){
 			$this->words['invalid'][] = $word;
@@ -154,7 +154,7 @@ class Boggle {
 			return $words;
 		}, $this->words);
 
-		echo self::header("Détails de vos points");
+		echo self::header($this->message("details"));
 		echo self::_print(join("\n", array_map(function($w){
 			return $w . " -> " . $this->getScore($w);
 		}, $this->words['valid'])), "success");
