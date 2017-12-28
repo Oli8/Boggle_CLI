@@ -118,8 +118,8 @@ class Boggle {
 		}
 	}
 
-	private static function valid_word(String $word): Bool{
-		return in_array($word, array_map('trim', file('french_words.txt')));
+	private function valid_word(String $word): Bool{
+		return in_array($word, array_map('trim', file("words/{$this->lang}.txt")));
 	}
 
 	private function getScore(String $word): Int{
