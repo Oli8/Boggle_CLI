@@ -72,7 +72,7 @@ class Boggle {
 		}
 		echo self::_print($this->message("elapsed_time"), "danger");
 		echo self::_print("Score: $this->score", "success");
-		if($this->words['valid'] || $this->words['invalid'])
+		if($this->words['valid'] || ($this->words['invalid'] && $this->malus))
 			$this->game_info();
 		$this->check_highscores();
 	}
