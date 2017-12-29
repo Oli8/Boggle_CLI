@@ -7,7 +7,6 @@ require_once 'messages.php';
 class Boggle {
 
 	private $dices = [];
-	private $letterScore = ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11];
 	private $grid = [];
 	private $gridObj = [];
 	private $time = 180;
@@ -122,11 +121,11 @@ class Boggle {
 		return in_array($word, array_map('trim', file("words/{$this->lang}.txt")));
 	}
 
-	private function getScore(String $word): Int{
+	private static function getScore(String $word): Int{
 		if(strlen($word) < 3)
 			return 0;
 
-		return $this->letterScore[min(8, strlen($word))];
+		return ['3' => 1, '4' => 1, '5' => 2, '6' => 3, '7' => 5, '8' => 11][min(8, strlen($word))];
 	}
 
 	private function find_word(String $word, Array $grid, Array $visited = []): Bool{
