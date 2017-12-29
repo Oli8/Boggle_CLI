@@ -87,6 +87,7 @@ class Boggle {
 		file_put_contents($highscore_file, json_encode($scores));
 
 		echo self::header("Record:");
+		krsort($scores);
 		foreach($scores as $time => $record)
 			echo "{$time}s. -> {$record['score']} - {$record['player']}\n";
 	}
